@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.mios.springboot</groupId>
+	<artifactId>spring-boot</artifactId>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+	<name>spring-boot-pelao</name>
+	<url>https://github.com/josesoc/templates/tree/master/spring-boot</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.1.RELEASE</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Unit Tests - Solo ejecuta los que terminan en "*Test ó *Tests" -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<!-- 
+					<configuration> 
+				     <excludes>
+				     	<exclude>**/*IT.class</exclude>
+				     </excludes> 
+					</configuration>
+				-->
+			</plugin>
+			<!-- Integration Tests $ mvn integration-test -P integration -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Cobertura # To create test coverage reports (in target/site/cobertura): 
+					mvn clean cobertura:cobertura test                        - generates target/site/cobertura reports
+					mvn cobertura:check test                                  - check the totalLineRate
+					mvn cobertura:check package                               - check the totalLineRate. If passed then packages.
+					mvn clean cobertura:cobertura cobertura:check package     - generate and check. If passed then packages.
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<formats>
+						<!-- The XML report (in target/site/cobertura/coverage.xml) is useful 
+							for uploading to Coveralls. -->
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+					<maxmem>256m</maxmem>
+					<instrumentation>
+						<excludes>
+							<!-- Configuration and Application classes can be excluded from test 
+								coverage, as they should have no meaningful logic inside - include if they 
+								do. -->
+								
+							<!-- Exlude Configuration Classes -->
+							<exclude>com/mios/**/*Configuration.class</exclude>
+							<exclude>com/mios/**/*Application.class</exclude>
+							
+							<!-- Exclude Test classes - NO HACE FALTA
+							<exclude>com/mios/springboot/**/*Test.class</exclude>
+							<exclude>com/mios/springboot/**/*Tests.class</exclude>							
+							<exclude>com/mios/springboot/it/**/*IT.class</exclude>
+							-->
+							<!-- Exclude Controller Classes e Integration Tests
+							<exclude>com/mios/**/*Controller.class</exclude>
+							
+							-->
+						</excludes>
+					</instrumentation>
+					<check>
+						<!-- Enable failing mvn build when test coverage does not meet or exceed 
+							goal: 
+								    mvn cobertura:check test
+									mvn cobertura:check package (not package if fail (< totalLineRate) )
+						-->
+						<totalLineRate>70</totalLineRate>
+						<haltOnFailure>true</haltOnFailure>
+					</check>
+					<!-- aggregated reports for data.multi-module projects <aggregate>true</aggregate> -->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
